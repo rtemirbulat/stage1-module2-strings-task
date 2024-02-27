@@ -1,5 +1,9 @@
 package com.epam.mjc;
 
+import java.util.ArrayList;
+import java.util.List;
+
+
 public class MethodParser {
 
     /**
@@ -20,6 +24,43 @@ public class MethodParser {
      * @return {@link MethodSignature} object filled with parsed values from source string
      */
     public MethodSignature parseFunction(String signatureString) {
-        throw new UnsupportedOperationException("You should implement this method.");
+        if (!(signatureString.isEmpty() || signatureString.isBlank())) {
+            //Split and replace round brackets
+            String[] dividedMethodParts = signatureString.split("\\(");
+            String argumentsMethodPart = dividedMethodParts[1].replace(")", "").trim();
+            String[] methodKeywords = dividedMethodParts[0].split(" ");
+            String methodName = methodKeywords[methodKeywords.length - 1];
+            String accessModifier = null;
+            String returnType = methodKeywords[0];
+            if (methodKeywords.length > 2) {
+                accessModifier = methodKeywords[0];
+                returnType = methodKeywords[1];
+            }
+            MethodSignature methodParsed;
+
+
+            if (argumentsMethodPart.length() > 1) {
+                List<String> args = List.of(argumentsMethodPart.split(","));
+                List<MethodSignature.Argument> arguments = new ArrayList<>();
+                for (String arg : args) {
+                    String[] argsSplitted = arg.trim().split(" ");
+                    if (argsSplitted.length == 2) {
+                        arguments.add(new MethodSignature.Argument(argsSplitted[0], argsSplitted[1]));
+                    } else {
+                        throw new IllegalArgumentException("Argument should be (type) name");
+                    }
+                }
+                methodParsed = new MethodSignature(methodName, arguments);
+                methodParsed.setAccessModifier(accessModifier);
+                methodParsed.setReturnType(returnType);
+                return methodParsed;
+            }
+            methodParsed = new MethodSignature(methodName);
+            methodParsed.setAccessModifier(accessModifier);
+            methodParsed.setReturnType(returnType);
+            return methodParsed;
+        } else {
+            throw new IllegalArgumentException("String is empty");
+        }
     }
 }
