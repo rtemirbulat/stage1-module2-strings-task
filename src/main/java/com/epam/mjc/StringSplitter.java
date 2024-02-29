@@ -14,17 +14,16 @@ public class StringSplitter {
     public List<String> splitByDelimiters(String source, Collection<String> delimiters) {
         List<String> resultList = new ArrayList<>();
         List<String> tempArr = new ArrayList<>();
-        String temp = source;
-        for (String d: delimiters) {
-            StringTokenizer st1 = new StringTokenizer(temp, d);
-            while (st1.hasMoreTokens()){
-                tempArr.add(st1.nextToken());
-            }
-            temp = String.join(", ",tempArr);
-            tempArr.clear();
+        String[] temp3;
+        tempArr.add(source);
+        int cnt = 0;
+        for (String d : delimiters) {
+            tempArr.add(tempArr.get(cnt).replaceAll(d, " "));
+            cnt++;
         }
-        resultList.add(temp);
-
-        return  resultList;
+        temp3 = tempArr.get(tempArr.size() - 1).split(" ");
+        resultList.addAll(Arrays.asList(temp3));
+        resultList.removeAll(Arrays.asList("", null));
+        return resultList;
     }
 }
